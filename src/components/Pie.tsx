@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { KINDS, placeHref } from "@/lib/config";
 import { listPlaces } from "@/lib/data";
-import { Icono, Logo } from "./Icono";
+import { Icono } from "./Icono";
+import { Marca } from "./Marca";
 
 export async function Pie() {
   const lugares = await listPlaces();
@@ -9,7 +10,7 @@ export async function Pie() {
     <footer className="bg-bosque text-white/80">
       <div className="contenedor grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <p className="flex items-center gap-2 text-2xl font-extrabold text-white"><Logo /> Sabana Travel&apos;s</p>
+          <p><Marca claro /></p>
           <p className="mt-4 text-sm leading-relaxed">Sabor, Descanso &amp; Placer. Hoteles, restaurantes y sitios turísticos de Sabana de Torres, Santander.</p>
         </div>
         {(["sitio", "hotel"] as const).map((k) => (

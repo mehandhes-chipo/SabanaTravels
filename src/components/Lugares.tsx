@@ -1,23 +1,18 @@
 "use client";
 import { useState } from "react";
-import { LUGARES, TIPOS, type Tipo } from "@/lib/lugares";
+import { KIND_ORDER, KINDS, type PlaceKind } from "@/lib/config";
+import type { PlaceListItem } from "@/lib/data";
 import { TarjetaLugar } from "./TarjetaLugar";
 
-const FILTROS: { valor: Tipo | "todos"; label: string }[] = [
-  { valor: "todos", label: "Todos" },
-  { valor: "restaurante", label: TIPOS.restaurante.varios },
-  { valor: "hotel", label: TIPOS.hotel.varios },
-  { valor: "sitio", label: TIPOS.sitio.varios },
-];
-
-/** Pestañas por categoría (como las ciudades de la plantilla) y tarjetas de lugares. */
-export function Lugares() {
-  const [filtro, setFiltro] = useState<Tipo | "todos">("todos");
-  const lista = filtro === "todos" ? LUGARES : LUGARES.filter((l) => l.tipo === filtro);
+/** Pestañas por categoría y tarjetas de lugares (portada). */
+export function Lugares({ lugares }: { lugares: PlaceListItem[] }) {
+  const [filtro, setFiltro] = useState<PlaceKind | "todos">("todos");
+  const lista = (filtro === "todos" ? lugares : lugares.filter((l) => l.kind === filtro)).slice(0, 6);
+  const filtros: { valor: PlaceKind | "todos"; label: string }[] = [{ valor: "todos", label: "Todos" }, ...KIND_ORDER.map((k) => ({ valor: k, label: KINDS[k].many }))];
   return (
     <>
       <div role="group" aria-label="Filtrar por categoría" className="mt-10 flex flex-wrap justify-center gap-3">
-        {FILTROS.map((f) => {
+        {filtros.map((f) => {
           const on = f.valor === filtro;
           return (
             <button
@@ -32,13 +27,13 @@ export function Lugares() {
           );
         })}
       </div>
-      <ul className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite">
-        {lista.map((l) => (
-          <li key={l.slug}>
-            <TarjetaLugar lugar={l} />
-          </li>
-        ))}
-      </ul>
+      {lista.length === 0 ? (
+        <p className="mt-12 text-center">Todavía no hay lugares publicados en esta categoría.</p>
+      ) : (
+        <ul className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3" aria-live="polite">
+          {lista.map((l) => <li key={l.id}><TarjetaLugar lugar={l} /></li>)}
+        </ul>
+      )}
     </>
   );
 }

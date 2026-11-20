@@ -19,6 +19,16 @@
   --color-nube: #f4f6f8;
   --color-bosque: #1d231f;
   --color-linea: #e6e9ec;
+  --color-naranja-100: #fff1dc;
+
+  /* Errores, formularios y tarjetas de los paneles (mismas reglas de contraste que la v1) */
+  --color-peligro: #a61b1b;
+  --color-peligro-100: #fdecea;
+  --color-peligro-200: #f6c6c1;
+  --color-borde-campo: #858c93;
+  --color-niebla: #626a72;
+  --radius-card: 12px;
+  --shadow-card: 0 4px 16px rgb(8 30 42 / 0.06);
 
   --radius-tarjeta: 16px;
   --shadow-tarjeta: 0 10px 30px rgb(8 30 42 / 0.08);
@@ -28,6 +38,7 @@
 @theme inline {
   --font-sans: var(--font-jakarta), system-ui, sans-serif;
   --font-script: var(--font-yesteryear), cursive;
+  --font-display: var(--font-jakarta), system-ui, sans-serif;
 }
 
 /* En @layer base para que las clases de Tailwind (text-white, etc.) puedan sobrescribirlas. */
@@ -49,6 +60,36 @@
 @utility guion { @apply font-script text-3xl text-verde sm:text-4xl; }
 @utility titulo-seccion { @apply mt-1 text-3xl sm:text-4xl lg:text-5xl; }
 @utility tarjeta { @apply overflow-hidden rounded-tarjeta bg-white shadow-tarjeta; }
+
+/* ---------- Componentes de formularios y paneles (ingreso, registro, panel del negocio, admin) ---------- */
+@utility btn-ui {
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+}
+@utility btn-primary { @apply btn-ui bg-marino text-white hover:bg-verde-700; }
+@utility btn-accent { @apply btn-ui bg-verde-700 text-white hover:bg-marino; }
+@utility btn-outline { @apply btn-ui border border-marino text-marino hover:bg-marino hover:text-white; }
+@utility btn-danger { @apply btn-ui border border-peligro text-peligro hover:bg-peligro hover:text-white; }
+@utility btn-sm { @apply px-3 py-1.5 text-sm; }
+@utility input {
+  @apply w-full rounded-md border border-borde-campo bg-white px-3 py-2 text-marino placeholder:text-niebla focus:border-verde-700 focus:outline-none focus:ring-2 focus:ring-verde-700;
+}
+@utility label { @apply mb-1 block text-sm font-semibold text-marino; }
+@utility card { @apply rounded-card border border-linea bg-white; }
+@utility kicker { @apply text-xs font-bold uppercase tracking-[0.18em] text-verde-700; }
+@utility section-title { @apply text-2xl; }
+@utility panel-title { @apply text-xl; }
+@utility card-title { @apply text-lg font-bold; }
+
+/* ---------- Mapa (Leaflet) ---------- */
+.town-pin { display: block; width: 26px; height: 26px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--pin); border: 3px solid #fff; box-shadow: 0 2px 6px rgb(0 0 0 / .35); }
+.leaflet-marker-icon:focus-visible .town-pin, .leaflet-marker-icon:hover .town-pin { outline: 3px solid var(--color-naranja); outline-offset: 2px; }
+.leaflet-container { font-family: var(--font-jakarta), system-ui, sans-serif; }
+.leaflet-popup-content { margin: 12px 14px; }
+.leaflet-popup-content p { margin: 0; }
+.town-pop-kind { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
+.town-pop-name { font-size: 16px; font-weight: 800; color: var(--color-marino); margin-top: 2px !important; }
+.town-pop-price { font-size: 13px; color: var(--color-texto); }
+.town-pop-link { display: inline-block; margin-top: 6px; font-weight: 700; color: var(--color-verde-700) !important; }
 
 /* Fondo menta con dibujos de viaje muy tenues (avión, ancla, brújula, pin). */
 .fondo-viaje {

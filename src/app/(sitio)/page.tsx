@@ -4,7 +4,11 @@ import { Icono, type NombreIcono } from "@/components/Icono";
 import { Lugares } from "@/components/Lugares";
 import { Portada } from "@/components/Portada";
 import { Reveal } from "@/components/Reveal";
-import { LUGARES, precio, sm, TIPOS } from "@/lib/lugares";
+import { KINDS } from "@/lib/config";
+import { getCounts, listPlaces } from "@/lib/data";
+import { formatPrice, thumbUrl } from "@/lib/format";
+
+export const dynamic = "force-dynamic";
 
 const ACTIVIDADES: { icono: NombreIcono; titulo: string; texto: string; href: string }[] = [
   { icono: "sendero", titulo: "Senderismo", texto: "Caminos de bosque con guía local en la reserva.", href: "/lugares/reserva-natural-cabildo-verde" },
@@ -21,10 +25,10 @@ const PASOS: { icono: NombreIcono; titulo: string; texto: string }[] = [
   { icono: "telefono", titulo: "Contacta", texto: "Escribe o llama directamente al negocio para reservar." },
 ];
 
-const conteo = (t: keyof typeof TIPOS) => LUGARES.filter((l) => l.tipo === t).length;
-
-export default function Home() {
-  const sitios = LUGARES.filter((l) => l.tipo === "sitio");
+export default async function Home() {
+  const [counts, lugares] = await Promise.all([getCounts(), listPlaces()]);
+  const total = counts.hotel + counts.restaurante + counts.sitio;
+  const sitios = lugares.filter((l) => l.kind === "sitio").slice(0, 3);
   return (
     <>
       <Portada />
@@ -33,14 +37,14 @@ export default function Home() {
       <section id="nosotros" className="contenedor grid items-center gap-14 py-24 lg:grid-cols-2 lg:py-32">
         <Reveal className="relative mx-auto w-full max-w-xl">
           <div className="grid grid-cols-[1.3fr_1fr] gap-4">
-            <img src={sm("/fotos/reserva-natural-cabildo-verde/05.webp")} alt="Sendero de la Reserva Natural Cabildo Verde" loading="lazy" className="row-span-2 h-full min-h-[420px] w-full rounded-[120px_16px_16px_16px] object-cover shadow-tarjeta" />
-            <img src={sm("/fotos/el-fogon/09.webp")} alt="Comedor del restaurante El Fogón" loading="lazy" className="aspect-square w-full rounded-tarjeta object-cover shadow-tarjeta" />
-            <img src={sm("/fotos/estadero-villa-juliana/11.webp")} alt="Piscina del Estadero Villa Juliana" loading="lazy" className="aspect-square w-full rounded-[16px_16px_90px_16px] object-cover shadow-tarjeta" />
+            <img src={thumbUrl("/fotos/reserva-natural-cabildo-verde/05.webp")} alt="Sendero de la Reserva Natural Cabildo Verde" loading="lazy" className="row-span-2 h-full min-h-[420px] w-full rounded-[120px_16px_16px_16px] object-cover shadow-tarjeta" />
+            <img src={thumbUrl("/fotos/el-fogon/09.webp")} alt="Comedor del restaurante El Fogón" loading="lazy" className="aspect-square w-full rounded-tarjeta object-cover shadow-tarjeta" />
+            <img src={thumbUrl("/fotos/estadero-villa-juliana/11.webp")} alt="Piscina del Estadero Villa Juliana" loading="lazy" className="aspect-square w-full rounded-[16px_16px_90px_16px] object-cover shadow-tarjeta" />
           </div>
           <div className="absolute -bottom-6 left-6 flex items-center gap-4 rounded-tarjeta bg-white p-5 shadow-flotante">
             <span className="grid size-14 place-items-center rounded-full bg-verde-100 text-verde-700"><Icono nombre="pin" className="size-7" /></span>
             <span>
-              <span className="block text-3xl font-extrabold text-marino"><Contador valor={LUGARES.length} /></span>
+              <span className="block text-3xl font-extrabold text-marino"><Contador valor={total} /></span>
               <span className="text-sm">lugares para visitar</span>
             </span>
           </div>
@@ -55,7 +59,7 @@ export default function Home() {
             {(["sitio", "restaurante", "hotel"] as const).map((t) => (
               <li key={t} className="flex items-start gap-3">
                 <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-verde-700 text-white"><Icono nombre="check" className="size-4" grosor={2.5} /></span>
-                <span><strong className="text-marino">{TIPOS[t].pilar}:</strong> {TIPOS[t].varios.toLowerCase()}</span>
+                <span><strong className="text-marino">{KINDS[t].pillar}:</strong> {KINDS[t].many.toLowerCase()}</span>
               </li>
             ))}
             <li className="flex items-start gap-3">
@@ -74,7 +78,7 @@ export default function Home() {
             <p className="guion">Sabor, descanso y placer</p>
             <h2 className="titulo-seccion">Lugares destacados para tu visita</h2>
           </Reveal>
-          <Lugares />
+          <Lugares lugares={lugares} />
         </div>
       </section>
 
@@ -112,10 +116,10 @@ export default function Home() {
           </Reveal>
           <ul className="grid grid-cols-2 gap-4">
             {[
-              { n: LUGARES.length, t: "Lugares" },
-              { n: conteo("hotel"), t: TIPOS.hotel.varios },
-              { n: conteo("restaurante"), t: TIPOS.restaurante.varios },
-              { n: conteo("sitio"), t: TIPOS.sitio.varios },
+              { n: total, t: "Lugares" },
+              { n: counts.hotel, t: KINDS.hotel.many },
+              { n: counts.restaurante, t: KINDS.restaurante.many },
+              { n: counts.sitio, t: KINDS.sitio.many },
             ].map((c, i) => (
               <Reveal as="li" key={c.t} delay={i * 0.08} className="rounded-tarjeta border border-white/20 bg-white/10 p-6 text-center backdrop-blur-sm">
                 <span className="block text-5xl font-extrabold"><Contador valor={c.n} /></span>
@@ -133,20 +137,20 @@ export default function Home() {
             <p className="guion">Naturaleza y aire libre</p>
             <h2 className="titulo-seccion">Sitios turísticos imperdibles</h2>
           </div>
-          <Link href="#lugares" className="btn-verde">Ver todos</Link>
+          <Link href="/explorar?tipo=sitios" className="btn-verde">Ver todos</Link>
         </Reveal>
         <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-rows-2">
           {sitios.map((s, i) => (
-            <Reveal as="li" key={s.slug} delay={i * 0.08} className={i === 0 ? "lg:row-span-2" : ""}>
+            <Reveal as="li" key={s.id} delay={i * 0.08} className={i === 0 ? "lg:row-span-2" : ""}>
               <Link href={`/lugares/${s.slug}`} className="group relative block h-full min-h-[280px] overflow-hidden rounded-tarjeta">
-                <img src={i === 0 ? s.fotos[0] : sm(s.fotos[0])} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                {s.cover_url && <img src={i === 0 ? s.cover_url : thumbUrl(s.cover_url)} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />}
                 <span className="absolute inset-0 bg-gradient-to-t from-marino/85 via-marino/20 to-transparent" />
                 <span className="absolute inset-x-6 bottom-6 flex items-end justify-between gap-4 text-white">
                   <span>
-                    <span className="block text-2xl font-extrabold">{s.nombre}</span>
-                    <span className="mt-1 block text-sm text-white/90">{s.resumen}</span>
+                    <span className="block text-2xl font-extrabold">{s.name}</span>
+                    <span className="mt-1 block text-sm text-white/90">{s.summary}</span>
                   </span>
-                  <span className="shrink-0 rounded-md bg-naranja px-3 py-1.5 text-sm font-bold text-marino">Desde {precio(s.desde)}</span>
+                  {s.price_from && <span className="shrink-0 rounded-md bg-naranja px-3 py-1.5 text-sm font-bold text-marino">Desde {formatPrice(s.price_from)}</span>}
                 </span>
               </Link>
             </Reveal>
@@ -177,11 +181,11 @@ export default function Home() {
       {/* ---------- Llamado final ---------- */}
       <section className="contenedor py-24">
         <Reveal className="relative overflow-hidden rounded-[24px] bg-marino px-8 py-14 text-center sm:px-16">
-          <img src={sm("/fotos/balneario-las-vegas/12.webp")} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+          <img src={thumbUrl("/fotos/balneario-las-vegas/12.webp")} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-25" />
           <div className="relative">
             <p className="font-script text-3xl text-verde sm:text-4xl">¿Tienes un negocio en Sabana de Torres?</p>
             <h2 className="mx-auto mt-2 max-w-3xl text-3xl text-white sm:text-4xl">Muestra tu hotel, restaurante o sitio turístico a quienes visitan el municipio</h2>
-            <Link href="#lugares" className="btn-verde mt-8">Conoce cómo se ven las fichas</Link>
+            <Link href="/registro" className="btn-verde mt-8">Publica tu negocio</Link>
           </div>
         </Reveal>
       </section>

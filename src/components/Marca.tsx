@@ -8,7 +8,8 @@ import { Logo } from "./Icono";
 export function Marca({ claro = false, compacta = false }: { claro?: boolean; compacta?: boolean }) {
   return (
     <span className="flex items-center gap-2.5 sm:gap-3">
-      <Logo className={compacta ? "size-10" : "size-10 sm:size-14"} />
+      {/* shrink-0: en columnas angostas (pie) el texto no debe aplastar el logo */}
+      <Logo className={`shrink-0 ${compacta ? "size-10" : "size-10 sm:size-14"}`} />
       <span className="flex flex-col leading-none">
         <span className="flex items-baseline gap-1.5">
           <span className={`font-extrabold uppercase tracking-tight ${compacta ? "text-[22px]" : "text-[22px] sm:text-[34px]"} ${claro ? "text-white" : "text-bandera-oscuro"}`}>

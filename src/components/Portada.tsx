@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { Icono } from "./Icono";
 
 const SLIDES = [
-  { foto: "/fotos/balneario-las-vegas/06.webp", lugar: "Balneario Las Vegas" },
-  { foto: "/fotos/reserva-natural-cabildo-verde/27.webp", lugar: "Reserva Natural Cabildo Verde" },
-  { foto: "/fotos/hotel-santa-maria-real/10.webp", lugar: "Hotel Santa María Real" },
+  { foto: "/fotos/portada/balneario-las-vegas-06.webp", lugar: "Balneario Las Vegas" },
+  { foto: "/fotos/portada/reserva-natural-cabildo-verde-27.webp", lugar: "Reserva Natural Cabildo Verde" },
+  { foto: "/fotos/portada/hotel-santa-maria-real-10.webp", lugar: "Hotel Santa María Real" },
 ];
 const PALABRAS = ["Sabor", "Descanso", "Placer"];
 const CAMBIO_MS = 6500;
@@ -55,10 +55,10 @@ export function Portada() {
           <img src={s.foto} alt="" className="h-full w-full object-cover" fetchPriority={i === 0 ? "high" : "low"} loading={i === 0 ? "eager" : "lazy"} />
         </div>
       ))}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-marino/85 via-marino/55 to-marino/10" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-marino/75 via-marino/30 to-transparent" />
 
       <div className="contenedor relative flex min-h-[calc(100svh-120px)] flex-col justify-center py-24 md:min-h-[640px]">
-        <div className="max-w-3xl">
+        <div className="max-w-3xl [text-shadow:0_2px_14px_rgb(8_30_42/0.6)]">
           <p className="font-script text-3xl text-verde sm:text-4xl">Descubre Sabana de Torres</p>
           <h1 className="mt-3 text-4xl uppercase text-white sm:text-6xl lg:text-7xl">
             Turismo, tradición y aventura

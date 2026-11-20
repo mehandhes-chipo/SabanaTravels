@@ -114,7 +114,7 @@
 /* Portada: las fotos se funden entre sí y hacen un zoom lento mientras están activas. */
 .hero-slide { opacity: 0; transition: opacity 1.4s ease; }
 .hero-slide.is-active { opacity: 1; }
-.hero-slide img { transform: scale(1.12); transition: transform 7s linear; }
+.hero-slide img { transform: scale(1.05); transition: transform 7s linear; }
 .hero-slide.is-active img { transform: scale(1); }
 .cursor-escribir { display: inline-block; width: 3px; margin-left: 6px; background: currentColor; animation: parpadeo 1s steps(1) infinite; }
 @keyframes parpadeo { 50% { opacity: 0; } }

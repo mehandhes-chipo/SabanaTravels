@@ -31,7 +31,7 @@ import unicodedata
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageFilter, ImageOps
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 from pillow_heif import register_heif_opener
 
 register_heif_opener()
@@ -114,6 +114,43 @@ def guardar(im: Image.Image, destino: Path, enfocar: bool = True):
         c.save(destino.with_name(destino.stem + sufijo + ".webp"), "WEBP", quality=calidad, method=6)
 
 
+# ---------- Portada (carrusel a pantalla completa) ----------
+# Las fotos editadas a mano miden 1200 px y se ven borrosas a pantalla completa. Para la portada se parte
+# del original HEIC (nitidez completa) y se le copian los colores de la versión editada.
+PORTADA = [("balneario-las-vegas", "06"), ("reserva-natural-cabildo-verde", "27"), ("hotel-santa-maria-real", "10")]
+PORTADA_DIR = DESTINO / "portada"
+
+
+def copiar_colores(base: Image.Image, referencia: Image.Image) -> Image.Image:
+    """Ajusta media y contraste de cada canal de `base` a los de `referencia` (transferencia de color)."""
+    b = np.asarray(base, dtype=np.float32)
+    r = np.asarray(referencia, dtype=np.float32)
+    out = (b - b.mean(axis=(0, 1))) / (b.std(axis=(0, 1)) + 1e-3) * r.std(axis=(0, 1)) + r.mean(axis=(0, 1))
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
+
+def portada(fuentes: dict[str, list[Path]]):
+    PORTADA_DIR.mkdir(exist_ok=True)
+    for slug, nn in PORTADA:
+        with Image.open(fuentes[slug][int(nn) - 1]) as src:
+            im = ImageOps.exif_transpose(src).convert("RGB")
+        im.thumbnail((2400, 2400), Image.Resampling.LANCZOS)
+        editada = EDITADAS / f"{slug}-{nn}.jpeg"
+        if editada.exists():
+            with Image.open(editada) as ref:
+                im = copiar_colores(im, ImageOps.exif_transpose(ref).convert("RGB"))
+            im = ImageEnhance.Color(im).enhance(1.08)  # la transferencia apaga un poco el color
+            origen = f"colores de {editada.name}"
+        else:
+            im = editar(im)
+            origen = "edición automática"
+        im.thumbnail((1920, 1920), Image.Resampling.LANCZOS)
+        # Suavizado mínimo antes del enfoque: quita el ruido del sensor (pesa mucho y no aporta detalle).
+        im = im.filter(ImageFilter.GaussianBlur(0.6)).filter(ImageFilter.UnsharpMask(radius=1.2, percent=70, threshold=4))
+        im.save(PORTADA_DIR / f"{slug}-{nn}.webp", "WEBP", quality=62, method=6)
+        print(f"  ok portada/{slug}-{nn}.webp  ({origen})")
+
+
 def hoja(pares: list[tuple[Image.Image, Image.Image]], salida: Path):
     """Antes (izquierda) / después (derecha), más un recorte al 100 % para ver el detalle."""
     an, al = 520, 390
@@ -133,9 +170,13 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--solo", nargs="*", help="lugar/NN, ej. el-fogon/09")
     p.add_argument("--comparar", type=Path, help="hoja antes / después / detalle")
+    p.add_argument("--portada", action="store_true", help="solo las 3 fotos del carrusel en 1920 px")
     args = p.parse_args()
 
     fuentes = originales()
+    if args.portada:
+        portada(fuentes)
+        sys.exit(0)
     if args.solo:
         objetivos = [tuple(x.split("/")) for x in args.solo]
     else:

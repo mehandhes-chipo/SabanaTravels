@@ -37,7 +37,7 @@ export default async function Home() {
       <section id="nosotros" className="contenedor grid items-center gap-14 py-24 lg:grid-cols-2 lg:py-32">
         <Reveal className="relative mx-auto w-full max-w-xl">
           <div className="grid grid-cols-[1.3fr_1fr] gap-4">
-            <img src={thumbUrl("/fotos/reserva-natural-cabildo-verde/05.webp")} alt="Sendero de la Reserva Natural Cabildo Verde" loading="lazy" className="row-span-2 h-full min-h-[420px] w-full rounded-[120px_16px_16px_16px] object-cover shadow-tarjeta" />
+            <img src={thumbUrl("/fotos/reserva-natural-cabildo-verde/05.webp")} alt="Letrero del rey gallinazo en la Reserva Natural Cabildo Verde" loading="lazy" className="row-span-2 h-full min-h-[420px] w-full rounded-[120px_16px_16px_16px] object-cover shadow-tarjeta" />
             <img src={thumbUrl("/fotos/el-fogon/09.webp")} alt="Comedor del restaurante El Fogón" loading="lazy" className="aspect-square w-full rounded-tarjeta object-cover shadow-tarjeta" />
             <img src={thumbUrl("/fotos/estadero-villa-juliana/11.webp")} alt="Piscina del Estadero Villa Juliana" loading="lazy" className="aspect-square w-full rounded-[16px_16px_90px_16px] object-cover shadow-tarjeta" />
           </div>

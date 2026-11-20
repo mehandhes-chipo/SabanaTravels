@@ -1,4 +1,6 @@
 // Íconos dibujados a mano (sin librerías). Decorativos: el texto o el aria-label del botón dan el significado.
+import { useId } from "react";
+
 const PATHS = {
   menu: "M4 7h16M4 12h11M4 17h16",
   cerrar: "M6 6l12 12M18 6L6 18",
@@ -36,14 +38,39 @@ export function Icono({ nombre, className = "size-5", grosor = 1.8 }: { nombre: 
   );
 }
 
-/** Logo: corazón con un pin (amor por el lugar), en verde y naranja. */
+/** Colores de la bandera de Sabana de Torres. */
+export const BANDERA = { verde: "#078a32", verdeOscuro: "#066b27", amarillo: "#fcdc0a" } as const;
+
+/**
+ * Logo "Sol sobre la sabana": sello redondo con los colores de la bandera de Sabana de Torres.
+ * Sol amarillo sobre la llanura verde, el río en blanco y espigas de arroz como las del escudo.
+ * useId: cada logo de la página tiene su propio recorte (si no, se pisan entre sí).
+ */
 export function Logo({ className = "size-9" }: { className?: string }) {
+  const clip = `logo-${useId().replace(/:/g, "")}`;
   return (
-    <svg viewBox="0 0 40 40" aria-hidden="true" className={className}>
-      <path d="M20 35S5 25.5 5 15a8 8 0 0 1 15-3.9A8 8 0 0 1 35 15c0 10.5-15 20-15 20z" fill="#4da528" />
-      <path d="M20 35S5 25.5 5 15a8 8 0 0 1 8-8c-3 4-2 13 7 28z" fill="#ff970d" />
-      <circle cx="21" cy="16.5" r="4.5" fill="#fff" />
-      <circle cx="21" cy="16.5" r="2" fill="#081e2a" />
+    <svg viewBox="0 0 64 64" aria-hidden="true" className={className}>
+      <defs>
+        <clipPath id={clip}><circle cx="32" cy="32" r="28" /></clipPath>
+      </defs>
+      <circle cx="32" cy="32" r="30" fill={BANDERA.amarillo} />
+      <g clipPath={`url(#${clip})`}>
+        <rect width="64" height="64" fill={BANDERA.verde} />
+        <circle cx="32" cy="35" r="12" fill={BANDERA.amarillo} />
+        <path d="M2 37c9-5 20-6 30-2s21 2 30-3v32H2z" fill={BANDERA.verdeOscuro} />
+        <path d="M6 49c8-5 16 3 26-1s18-4 26 0" fill="none" stroke="#fff" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="M9 56c7-3 14 2 22-1" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity=".7" />
+      </g>
+      <g fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round">
+        <path d="M14 33c-1-5 0-9 3-12" />
+        <path d="M50 33c1-5 0-9-3-12" />
+      </g>
+      <g fill="#fff">
+        <ellipse cx="14.5" cy="25" rx="1.4" ry="2.6" transform="rotate(-25 14.5 25)" />
+        <ellipse cx="13.6" cy="29" rx="1.4" ry="2.6" transform="rotate(-15 13.6 29)" />
+        <ellipse cx="49.5" cy="25" rx="1.4" ry="2.6" transform="rotate(25 49.5 25)" />
+        <ellipse cx="50.4" cy="29" rx="1.4" ry="2.6" transform="rotate(15 50.4 29)" />
+      </g>
     </svg>
   );
 }

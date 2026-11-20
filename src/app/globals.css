@@ -21,6 +21,11 @@
   --color-linea: #e6e9ec;
   --color-naranja-100: #fff1dc;
 
+  /* Bandera de Sabana de Torres (logo y marca) */
+  --color-bandera: #078a32;
+  --color-bandera-oscuro: #066b27;
+  --color-bandera-amarillo: #fcdc0a;
+
   /* Errores, formularios y tarjetas de los paneles (mismas reglas de contraste que la v1) */
   --color-peligro: #a61b1b;
   --color-peligro-100: #fdecea;

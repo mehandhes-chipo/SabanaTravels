@@ -40,7 +40,7 @@ src/
   components/            diseño público (Encabezado, Portada, TarjetaLugar…), panel/, auth/, ui/, site/
   db/schema.ts           tablas: users, places, place_photos, price_items, menu_items, packages, promotions, reviews, events
   lib/                   config, consultas (data.ts), permisos, formato, subida de fotos
-scripts/                 seed y conexión para consola
+scripts/                 seed, conexión para consola y retocar_fotos.py (retoque uniforme de las fotos)
 ```
 
 Toda escritura pasa por `src/lib/permissions.ts`.

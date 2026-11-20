@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { logout } from "@/app/actions/auth";
-import { Icono, Logo } from "./Icono";
+import { Icono } from "./Icono";
+import { Marca } from "./Marca";
 
 const ENLACES = [
   { href: "/", label: "Inicio" },
@@ -46,18 +47,17 @@ export function Encabezado({ cuenta }: { cuenta: Cuenta }) {
           <p className="flex items-center gap-2">
             <Icono nombre="pin" className="size-4 text-verde-700" /> Sabana de Torres, Santander · Colombia
           </p>
-          <p className="font-semibold text-marino">Sabor · Descanso · Placer</p>
+          <p className="font-semibold text-marino">Hoteles · Restaurantes · Sitios turísticos</p>
         </div>
       </div>
 
       <header className={`sticky top-0 z-40 bg-white transition-shadow ${bajo ? "shadow-tarjeta" : ""}`}>
-        <div className="contenedor grid grid-cols-[1fr_auto_1fr] items-center py-4">
+        <div className={`contenedor grid grid-cols-[1fr_auto_1fr] items-center transition-[padding] ${bajo ? "py-2.5" : "py-3 sm:py-5"}`}>
           <button type="button" onClick={() => setAbierto(true)} aria-label="Abrir menú" aria-expanded={abierto} className="justify-self-start rounded-md p-2 text-marino hover:bg-nube">
             <Icono nombre="menu" className="size-7" />
           </button>
-          <Link href="/" className="flex items-center gap-2 text-2xl font-extrabold text-marino">
-            <Logo />
-            <span>Sabana Travel&apos;s</span>
+          <Link href="/" aria-label="Sabana Travel's, inicio" className="rounded-md">
+            <Marca />
           </Link>
           <div className="flex items-center gap-2 justify-self-end">
             <Link href="/explorar" aria-label="Buscar lugares" className="rounded-md p-2 text-marino hover:bg-nube">
@@ -84,7 +84,7 @@ export function Encabezado({ cuenta }: { cuenta: Cuenta }) {
         <button type="button" tabIndex={-1} aria-label="Cerrar menú" onClick={() => setAbierto(false)} className={`absolute inset-0 bg-marino/60 transition-opacity ${abierto ? "opacity-100" : "opacity-0"}`} />
         <nav aria-label="Principal" className={`absolute inset-y-0 left-0 flex w-80 max-w-[85vw] flex-col bg-white p-6 shadow-flotante transition-transform duration-300 ${abierto ? "translate-x-0" : "-translate-x-full"}`}>
           <div className="flex items-center justify-between">
-            <span className="flex items-center gap-2 text-xl font-extrabold text-marino"><Logo className="size-8" /> Sabana Travel&apos;s</span>
+            <Marca compacta />
             <button type="button" onClick={() => setAbierto(false)} aria-label="Cerrar menú" className="rounded-md p-2 text-marino hover:bg-nube" tabIndex={abierto ? 0 : -1}>
               <Icono nombre="cerrar" className="size-6" />
             </button>

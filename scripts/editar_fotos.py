@@ -118,6 +118,9 @@ def guardar(im: Image.Image, destino: Path, enfocar: bool = True):
 # Las fotos editadas a mano miden 1200 px y se ven borrosas a pantalla completa. Para la portada se parte
 # del original HEIC (nitidez completa) y se le copian los colores de la versión editada.
 PORTADA = [("balneario-las-vegas", "06"), ("reserva-natural-cabildo-verde", "27"), ("hotel-santa-maria-real", "10")]
+# En el Balneario, fotos-editadas/…-06 es otra escena (la entrada), no una edición de la 06 original:
+# la portada no debe copiar sus colores.
+PORTADA_SIN_REFERENCIA = {("balneario-las-vegas", "06")}
 PORTADA_DIR = DESTINO / "portada"
 
 
@@ -136,7 +139,7 @@ def portada(fuentes: dict[str, list[Path]]):
             im = ImageOps.exif_transpose(src).convert("RGB")
         im.thumbnail((2400, 2400), Image.Resampling.LANCZOS)
         editada = EDITADAS / f"{slug}-{nn}.jpeg"
-        if editada.exists():
+        if editada.exists() and (slug, nn) not in PORTADA_SIN_REFERENCIA:
             with Image.open(editada) as ref:
                 im = copiar_colores(im, ImageOps.exif_transpose(ref).convert("RGB"))
             im = ImageEnhance.Color(im).enhance(1.08)  # la transferencia apaga un poco el color

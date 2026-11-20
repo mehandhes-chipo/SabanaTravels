@@ -20,3 +20,10 @@ npm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# base local de desarrollo y fotos subidas en modo local
+/.data
+/public/uploads
+
+# la plantilla de variables sí se versiona
+!.env.example

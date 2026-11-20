@@ -1,19 +1,23 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { logout } from "@/app/actions/auth";
 import { Icono, Logo } from "./Icono";
 
 const ENLACES = [
-  { href: "/#inicio", label: "Inicio" },
-  { href: "/#nosotros", label: "Sabana de Torres" },
-  { href: "/#lugares", label: "Lugares" },
-  { href: "/#actividades", label: "Actividades" },
-  { href: "/#destinos", label: "Sitios turísticos" },
+  { href: "/", label: "Inicio" },
+  { href: "/explorar", label: "Explorar lugares" },
+  { href: "/explorar?tipo=restaurantes", label: "Restaurantes" },
+  { href: "/explorar?tipo=hoteles", label: "Hoteles" },
+  { href: "/explorar?tipo=sitios", label: "Sitios turísticos" },
+  { href: "/eventos", label: "Eventos y festividades" },
   { href: "/#como-funciona", label: "Cómo funciona" },
 ];
 
-/** Barra superior + encabezado con logo centrado, menú lateral y acceso a los lugares. */
-export function Encabezado() {
+export type Cuenta = { nombre: string; panel: string | null } | null;
+
+/** Barra superior + encabezado con logo centrado, menú lateral y acceso a la cuenta. */
+export function Encabezado({ cuenta }: { cuenta: Cuenta }) {
   const [abierto, setAbierto] = useState(false);
   const [bajo, setBajo] = useState(false);
 
@@ -56,10 +60,21 @@ export function Encabezado() {
             <span>Sabana Travel&apos;s</span>
           </Link>
           <div className="flex items-center gap-2 justify-self-end">
-            <Link href="/#lugares" aria-label="Buscar lugares" className="rounded-md p-2 text-marino hover:bg-nube">
+            <Link href="/explorar" aria-label="Buscar lugares" className="rounded-md p-2 text-marino hover:bg-nube">
               <Icono nombre="buscar" className="size-6" />
             </Link>
-            <Link href="/#lugares" className="btn-verde hidden px-5 py-3 lg:inline-flex">Explorar</Link>
+            {cuenta ? (
+              <>
+                {cuenta.panel && <Link href={cuenta.panel} className="btn-verde hidden px-5 py-3 lg:inline-flex">Mi panel</Link>}
+                <form action={logout} className="hidden lg:block">
+                  <button className="rounded-md px-3 py-3 text-sm font-bold text-marino hover:text-verde-700">Salir</button>
+                </form>
+              </>
+            ) : (
+              <Link href="/ingresar" className="btn-verde hidden px-5 py-3 lg:inline-flex">
+                <Icono nombre="usuario" className="size-4" /> Ingresar
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -83,7 +98,22 @@ export function Encabezado() {
               </li>
             ))}
           </ul>
-          <p className="mt-auto text-sm">Turismo en Sabana de Torres: hoteles, restaurantes y sitios para visitar.</p>
+          <div className="mt-auto flex flex-col gap-3 border-t border-linea pt-6">
+            {cuenta ? (
+              <>
+                <p className="text-sm">Hola, <strong className="text-marino">{cuenta.nombre}</strong></p>
+                {cuenta.panel && <Link href={cuenta.panel} onClick={() => setAbierto(false)} tabIndex={abierto ? 0 : -1} className="btn-verde">Mi panel</Link>}
+                <form action={logout}>
+                  <button tabIndex={abierto ? 0 : -1} className="btn-outline w-full">Salir</button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link href="/ingresar" onClick={() => setAbierto(false)} tabIndex={abierto ? 0 : -1} className="btn-verde">Ingresar</Link>
+                <Link href="/registro" onClick={() => setAbierto(false)} tabIndex={abierto ? 0 : -1} className="btn-outline">Crear cuenta</Link>
+              </>
+            )}
+          </div>
         </nav>
       </div>
     </>

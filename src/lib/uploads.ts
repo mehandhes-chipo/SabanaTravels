@@ -6,12 +6,13 @@ import { del, put } from "@vercel/blob";
 
 /**
  * Fotos subidas desde el panel del negocio.
- * - Producción (Vercel): se guardan en Vercel Blob. Vercel crea BLOB_READ_WRITE_TOKEN al conectar
- *   un Blob store al proyecto (Storage → Blob).
- * - Desarrollo: si no hay token, se guardan en public/uploads/<ficha>/ (carpeta ignorada por git).
+ * - Producción (Vercel): se guardan en Vercel Blob. Al conectar un Blob store al proyecto, Vercel crea
+ *   BLOB_STORE_ID (autenticación OIDC, la actual) o BLOB_READ_WRITE_TOKEN (token fijo, la anterior);
+ *   el SDK usa la que exista.
+ * - Desarrollo: si no hay ninguna, se guardan en public/uploads/<ficha>/ (carpeta ignorada por git).
  * En Vercel sin Blob conectado el disco es de solo lectura, así que la subida se desactiva con un aviso.
  */
-const BLOB = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+const BLOB = Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN);
 export const UPLOADS_ENABLED = BLOB || !process.env.VERCEL;
 
 export const MAX_PHOTO_BYTES = 3.5 * 1024 * 1024;

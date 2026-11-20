@@ -1,0 +1,22 @@
+# dependencias
+/node_modules
+
+# next.js
+/.next/
+/out/
+/build
+
+# varios
+.DS_Store
+*.pem
+npm-debug.log*
+
+# variables de entorno
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

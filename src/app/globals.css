@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+/*
+ * Estilo inspirado en una plantilla de turismo: fondo blanco, verde aventura como color principal,
+ * azul marino para títulos, secciones menta con dibujos de viaje y una franja verde de cifras.
+ * Contraste (WCAG AA): el verde vivo (#4da528) solo se usa en textos grandes, íconos y decoración;
+ * botones y texto pequeño usan verde-700 (#367f1b, 5:1 sobre blanco).
+ */
+@theme {
+  --color-verde: #4da528;
+  --color-verde-700: #367f1b;
+  --color-verde-100: #e4f2dc;
+  --color-marino: #081e2a;
+  --color-texto: #4f545a;
+  --color-gris: #6b6a67;
+  --color-naranja: #ff970d;
+  --color-cian: #14b0c3;
+  --color-menta: #f3f8f6;
+  --color-nube: #f4f6f8;
+  --color-bosque: #1d231f;
+  --color-linea: #e6e9ec;
+
+  --radius-tarjeta: 16px;
+  --shadow-tarjeta: 0 10px 30px rgb(8 30 42 / 0.08);
+  --shadow-flotante: 0 20px 50px rgb(8 30 42 / 0.16);
+}
+
+@theme inline {
+  --font-sans: var(--font-jakarta), system-ui, sans-serif;
+  --font-script: var(--font-yesteryear), cursive;
+}
+
+/* En @layer base para que las clases de Tailwind (text-white, etc.) puedan sobrescribirlas. */
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+  body { background: #fff; color: var(--color-texto); }
+  h1, h2, h3, h4 { color: var(--color-marino); font-weight: 800; line-height: 1.15; }
+  :focus-visible { outline: 3px solid var(--color-naranja); outline-offset: 2px; }
+}
+
+@utility contenedor { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-7 py-4 text-sm font-bold uppercase tracking-wide transition-colors;
+}
+@utility btn-verde { @apply btn bg-verde-700 text-white hover:bg-marino; }
+@utility btn-blanco { @apply btn bg-white text-marino hover:bg-naranja; }
+@utility btn-borde { @apply btn border-2 border-white text-white hover:bg-white hover:text-marino; }
+/* Subtítulo manuscrito sobre cada título de sección (texto grande: el verde vivo cumple 3:1). */
+@utility guion { @apply font-script text-3xl text-verde sm:text-4xl; }
+@utility titulo-seccion { @apply mt-1 text-3xl sm:text-4xl lg:text-5xl; }
+@utility tarjeta { @apply overflow-hidden rounded-tarjeta bg-white shadow-tarjeta; }
+
+/* Fondo menta con dibujos de viaje muy tenues (avión, ancla, brújula, pin). */
+.fondo-viaje {
+  background-color: var(--color-menta);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' fill='none' stroke='%23081e2a' stroke-opacity='.05' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M30 60l40-12 18-26 8 4-10 26 30-8 8-12 6 2-4 16 16 4-2 6-18-2-16 30-8-2 6-28-30 8-26 22-6-4z'/%3E%3Ccircle cx='180' cy='60' r='26'/%3E%3Cpath d='M180 34v52M154 60h52M180 60l14-14'/%3E%3Cpath d='M60 150v50M44 166h32M40 196c6 10 14 14 20 14s14-4 20-14'/%3E%3Ccircle cx='60' cy='146' r='6'/%3E%3Cpath d='M180 140c-14 0-24 10-24 24 0 18 24 42 24 42s24-24 24-42c0-14-10-24-24-24z'/%3E%3Ccircle cx='180' cy='164' r='8'/%3E%3Cpath d='M110 110c20 10 40-10 60 0' stroke-dasharray='4 8'/%3E%3C/svg%3E");
+}
+/* Curvas de nivel para la franja verde. */
+.fondo-curvas {
+  background-color: var(--color-verde-700);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' fill='none' stroke='%23ffffff' stroke-opacity='.08' stroke-width='1.5'%3E%3Cpath d='M-20 80c80-40 160 40 240 0s160-40 200 0'/%3E%3Cpath d='M-20 130c80-40 160 40 240 0s160-40 200 0'/%3E%3Cpath d='M-20 180c80-40 160 40 240 0s160-40 200 0'/%3E%3Cpath d='M-20 230c80-40 160 40 240 0s160-40 200 0'/%3E%3Cpath d='M-20 280c80-40 160 40 240 0s160-40 200 0'/%3E%3Cpath d='M-20 330c80-40 160 40 240 0s160-40 200 0'/%3E%3C/svg%3E");
+}
+
+/* Aparición al hacer scroll (ver components/Reveal.tsx). */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); transition-delay: var(--delay, 0s); }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* Portada: las fotos se funden entre sí y hacen un zoom lento mientras están activas. */
+.hero-slide { opacity: 0; transition: opacity 1.4s ease; }
+.hero-slide.is-active { opacity: 1; }
+.hero-slide img { transform: scale(1.12); transition: transform 7s linear; }
+.hero-slide.is-active img { transform: scale(1); }
+.cursor-escribir { display: inline-block; width: 3px; margin-left: 6px; background: currentColor; animation: parpadeo 1s steps(1) infinite; }
+@keyframes parpadeo { 50% { opacity: 0; } }
+@keyframes flotar { 0%, 100% { transform: translateY(0) rotate(-8deg); } 50% { transform: translateY(-12px) rotate(-8deg); } }
+.flotar { animation: flotar 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .hero-slide, .hero-slide img { transition: none; transform: none; }
+  .cursor-escribir, .flotar { animation: none; }
+}

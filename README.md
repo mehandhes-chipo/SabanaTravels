@@ -60,7 +60,7 @@ Toda escritura pasa por `src/lib/permissions.ts`.
 
 ## Publicar gratis: Vercel + Neon + Vercel Blob
 
-Todo con planes gratuitos: **Vercel Hobby** (sitio, uso personal o no comercial), **Neon Free** (PostgreSQL, 1 GB) y **Vercel Blob** (fotos que suben los negocios, incluido en Hobby). El código ya los soporta: con una `DATABASE_URL` `postgresql://…` usa Neon, y con `BLOB_READ_WRITE_TOKEN` guarda las fotos en Blob.
+Todo con planes gratuitos: **Vercel Hobby** (sitio, uso personal o no comercial), **Neon Free** (PostgreSQL, 1 GB) y **Vercel Blob** (fotos que suben los negocios, incluido en Hobby). El código ya los soporta: con una `DATABASE_URL` `postgresql://…` usa Neon, y con `BLOB_STORE_ID` (o `BLOB_READ_WRITE_TOKEN`) guarda las fotos en Blob.
 
 ### 1. Base de datos en Neon
 1. Crear cuenta en <https://neon.com> (se puede entrar con GitHub) y un proyecto, región **AWS US East (N. Virginia)** o la más cercana.
@@ -86,7 +86,7 @@ npx tsx scripts/seed.ts
 | `AUTH_SECRET` | Texto aleatorio de 32+ caracteres (`npx auth secret` lo genera) |
 | `NEXT_PUBLIC_SITE_URL` | `https://<tu-proyecto>.vercel.app` |
 
-3. **Storage → Create Database → Blob → Connect** al proyecto: Vercel agrega solo `BLOB_READ_WRITE_TOKEN`.
+3. **Storage → Create Database → Blob**, con acceso **Public**, y **Connect** al proyecto: Vercel agrega solo `BLOB_STORE_ID` (o `BLOB_READ_WRITE_TOKEN` en cuentas antiguas). Un almacén **Private** no sirve: las fotos de las fichas deben verse sin iniciar sesión.
 4. **Deployments → Redeploy** para que tome las variables. Cada `git push` a `main` vuelve a publicar.
 
 ### 3. Comprobar
